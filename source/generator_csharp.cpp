@@ -6880,7 +6880,7 @@ void GeneratorCSharp::GenerateReceiver(const std::string& domain, const std::sha
             if (s->message)
             {
                 std::string struct_name = ConvertTypeName(domain, *p->name, *s->name, false);
-                WriteLineIndent("void OnReceive(" + struct_name + " value) {}");
+                WriteLineIndent("public void OnReceive(" + struct_name + " value);");
             }
         }
     }
@@ -7033,6 +7033,20 @@ void GeneratorCSharp::GenerateReceiver(const std::string& domain, const std::sha
     WriteLineIndent("return false;");
     Indent(-1);
     WriteLineIndent("}");
+
+    //colocar o loop AQUIIIIII!!!!!!!!!!!!!!!!!!!!
+    WriteLineIndent("// Receive handlers");
+    if (p->body)
+    {
+        for (const auto& s : p->body->structs)
+        {
+            if (s->message)
+            {
+                std::string struct_name = ConvertTypeName(domain, *p->name, *s->name, false);
+                WriteLineIndent("public void OnReceive(" + struct_name + " value) {}");
+            }
+        }
+    }
 
     // Generate receiver end
     Indent(-1);
