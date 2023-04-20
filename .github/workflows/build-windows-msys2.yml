@@ -45,3 +45,9 @@ jobs:
         run: |
           cd build
           ./unix.sh
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: D:/a/FastBinaryEncoding/FastBinaryEncoding/bin/fbec.exe  
+    
