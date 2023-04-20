@@ -156,7 +156,7 @@ void GeneratorCSharp::GenerateFBEUuidGenerator()
             guid[7] &= 0x0F;
             guid[7] |= 0x10;
 
-            return new Guid(guid);
+            return new Guid(guid.ToArray());
         }
 
         // Generate random UUID4 (randomly or pseudo-randomly generated version)
@@ -3184,9 +3184,9 @@ void GeneratorCSharp::GenerateFBESender()
     public interface ISenderListener
     {
         // Send message handler
-        long OnSend(byte[] buffer, long offset, long size) { return size; }
+        long OnSend(byte[] buffer, long offset, long size);
         // Send log message handler
-        void OnSendLog(string message) {}
+        void OnSendLog(string message);
     }
 
     // Fast Binary Encoding base sender
@@ -3222,6 +3222,9 @@ void GeneratorCSharp::GenerateFBESender()
             Buffer.Remove(0, sent);
             return sent;
         }
+
+        public long OnSend(byte[] buffer, long offset, long size) { return size; }
+        public void OnSendLog(string message) { }
     }
 )CODE";
 
@@ -3238,7 +3241,7 @@ void GeneratorCSharp::GenerateFBEReceiver()
     public interface IReceiverListener
     {
         // Receive log message handler
-        void OnReceiveLog(string message) {}
+        void OnReceiveLog(string message);
     }
 
     // Fast Binary Encoding base receiver
@@ -3504,6 +3507,8 @@ void GeneratorCSharp::GenerateFBEReceiver()
 
         // Receive message handler
         internal abstract bool OnReceive(long type, byte[] buffer, long offset, long size);
+    
+        public void OnReceiveLog(string message) { }
     }
 )CODE";
 
@@ -3836,6 +3841,12 @@ void GeneratorCSharp::GenerateFBEClient()
 
         // Receive message handler
         internal abstract bool OnReceive(long type, byte[] buffer, long offset, long size);
+    
+        public void OnReceiveLog(string message) { }
+
+        public long OnSend(byte[] buffer, long offset, long size) { return size; }
+
+        public void OnSendLog(string message) { }
     }
 )CODE";
 
