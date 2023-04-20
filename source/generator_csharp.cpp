@@ -6880,7 +6880,7 @@ void GeneratorCSharp::GenerateReceiver(const std::string& domain, const std::sha
             if (s->message)
             {
                 std::string struct_name = ConvertTypeName(domain, *p->name, *s->name, false);
-                WriteLineIndent("public void OnReceive(" + struct_name + " value);");
+                WriteLineIndent("void OnReceive(" + struct_name + " value);");
             }
         }
     }
@@ -7101,7 +7101,7 @@ void GeneratorCSharp::GenerateProxy(const std::string& domain, const std::shared
             if (s->message)
             {
                 std::string struct_model = *s->name + model;
-                WriteLineIndent("void OnProxy(" + struct_model + " model, long type, byte[] buffer, long offset, long size) {}");
+                WriteLineIndent("void OnProxy(" + struct_model + " model, long type, byte[] buffer, long offset, long size);");
             }
         }
     }
@@ -7227,6 +7227,20 @@ void GeneratorCSharp::GenerateProxy(const std::string& domain, const std::shared
     WriteLineIndent("return false;");
     Indent(-1);
     WriteLineIndent("}");
+
+    if (p->body)
+    {
+        WriteLineIndent("// Proxy handlers");
+        for (const auto& s : p->body->structs)
+        {
+            if (s->message)
+            {
+                std::string struct_model = *s->name + model;
+                WriteLineIndent("public void OnProxy(" + struct_model + " model, long type, byte[] buffer, long offset, long size) {}");
+            }
+        }
+    }
+
 
     // Generate proxy end
     Indent(-1);
