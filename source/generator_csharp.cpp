@@ -6753,13 +6753,13 @@ void GeneratorCSharp::GenerateSender(const std::string& domain, const std::share
     WriteLine();
 
     // Generate send method
-    WriteLineIndent("public long Send(object obj) { return SendListener(this, obj); }");
+    WriteLineIndent("public long Send<T>(ref T obj) { return SendListener(this, ref obj); }");
     WriteLineIndent("public long SendListener(" + listener + " listener, object obj)");
     WriteLineIndent("{");
     Indent(1);
     if (p->body)
     {
-        WriteLineIndent("switch (obj)");
+        WriteLineIndent("return obj switch");
         WriteLineIndent("{");
         Indent(1);
         for (const auto& s : p->body->structs)
@@ -6767,14 +6767,15 @@ void GeneratorCSharp::GenerateSender(const std::string& domain, const std::share
             if (s->message)
             {
                 std::string struct_name = "global::" + domain + *p->name + "." + *s->name;
-                WriteLineIndent("case " + struct_name + " value when value.FBEType == " + struct_name + ".FBETypeConst: return SendListener(listener, value);");
+                WriteLineIndent(struct_name + " value when value.FBEType == " + struct_name + ".FBETypeConst => SendListener(listener, ref value),");
             }
         }
-        WriteLineIndent("default: break;");
+        WriteLineIndent("_ => 0");
         Indent(-1);
-        WriteLineIndent("}");
+        WriteLineIndent("};");
         WriteLine();
     }
+
     if (p->import)
     {
         WriteLineIndent("long result;");
@@ -6801,12 +6802,12 @@ void GeneratorCSharp::GenerateSender(const std::string& domain, const std::share
             if (s->message)
             {
                 std::string struct_name = "global::" + domain + *p->name + "." + *s->name;
-                WriteLineIndent("public long Send(" + struct_name + " value) { return SendListener(this, value); }");
-                WriteLineIndent("public long SendListener(" + listener + " listener, " + struct_name + " value)");
+                WriteLineIndent("public long Send(ref " + struct_name + " value) { return SendListener(this, ref value); }");
+                WriteLineIndent("public long SendListener(" + listener + " listener, ref " + struct_name + " value)");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent("// Serialize the value into the FBE stream");
-                WriteLineIndent("long serialized = " + *s->name + "Model.Serialize(value);");
+                WriteLineIndent("long serialized = " + *s->name + "Model.Serialize(ref value);");
                 WriteLineIndent("Debug.Assert((serialized > 0), \"" + domain + *p->name + "." + *s->name + " serialization failed!\");");
                 WriteLineIndent("Debug.Assert(" + *s->name + "Model.Verify(), \"" + domain + *p->name + "." + *s->name + " validation failed!\");");
                 WriteLine();
