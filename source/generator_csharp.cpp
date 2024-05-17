@@ -791,7 +791,7 @@ void GeneratorCSharp::GenerateFBEFieldModelBase()
         public abstract void Get(out T value, T defaults);
 
         // Set the value
-        public abstract void Set(T value);
+        public abstract void Set(ref T value);
 
         // Create field model of the given type
         public static FieldModelValueType<T> CreateFieldModel(BaseTypes type, Buffer buffer, long offset)
@@ -909,7 +909,7 @@ void GeneratorCSharp::GenerateFBEFieldModel(const std::string& name, const std::
         }
 
         // Set the value
-        public override void Set(_TYPE_ value)
+        public override void Set(ref _TYPE_ value)
         {
             Debug.Assert(((_buffer.Offset + FBEOffset + FBESize) <= _buffer.Size), "Model is broken!");
             if ((_buffer.Offset + FBEOffset + FBESize) > _buffer.Size)
@@ -962,7 +962,7 @@ void GeneratorCSharp::GenerateFBEFieldModelTimestamp()
         }
 
         // Set the timestamp value
-        public override void Set(DateTime value)
+        public override void Set(ref DateTime value)
         {
             Debug.Assert(((_buffer.Offset + FBEOffset + FBESize) <= _buffer.Size), "Model is broken!");
             if ((_buffer.Offset + FBEOffset + FBESize) > _buffer.Size)
@@ -5334,7 +5334,7 @@ void GeneratorCSharp::GenerateStruct(const std::string& domain, const std::share
     Indent(1);
     WriteLineIndent("// Serialize the struct to the FBE stream");
     WriteLineIndent("var writer = new " + domain + *p->name + ".FBE." + *s->name + "Model();");
-    WriteLineIndent("writer.Serialize(this);");
+    WriteLineIndent("writer.Serialize(ref this);");
     WriteLine();
     WriteLineIndent("// Deserialize the struct from the FBE stream");
     WriteLineIndent("var reader = new " + domain + *p->name + ".FBE." + *s->name + "Model();");
@@ -6072,7 +6072,7 @@ void GeneratorCSharp::GenerateStructFieldModel(const std::string& domain, const 
     // Generate struct field model Set() method
     WriteLine();
     WriteLineIndent("// Set the struct value");
-    WriteLineIndent("public override void Set(" + *s->name + " fbeValue)");
+    WriteLineIndent("public override void Set(ref " + *s->name + " fbeValue)");
     WriteLineIndent("{");
     Indent(1);
     WriteLineIndent("long fbeBegin = SetBegin();");
@@ -6081,7 +6081,7 @@ void GeneratorCSharp::GenerateStructFieldModel(const std::string& domain, const 
     WriteLineIndent("return;");
     Indent(-1);
     WriteLine();
-    WriteLineIndent("SetFields(fbeValue);");
+    WriteLineIndent("SetFields(ref fbeValue);");
     WriteLineIndent("SetEnd(fbeBegin);");
     Indent(-1);
     WriteLineIndent("}");
@@ -6089,13 +6089,13 @@ void GeneratorCSharp::GenerateStructFieldModel(const std::string& domain, const 
     // Generate struct field model SetFields() method
     WriteLine();
     WriteLineIndent("// Set the struct fields values");
-    WriteLineIndent("public void SetFields(" + *s->name + " fbeValue)");
+    WriteLineIndent("public void SetFields(ref " + *s->name + " fbeValue)");
     WriteLineIndent("{");
     Indent(1);
     if ((s->base && !s->base->empty()) || (s->body && !s->body->fields.empty()))
     {
         if (s->base && !s->base->empty())
-            WriteLineIndent("parent.SetFields(fbeValue.parent);");
+            WriteLineIndent("parent.SetFields(ref fbeValue.parent);");
         if (s->body)
             for (const auto& field : s->body->fields)
                 WriteLineIndent(*field->name + ".Set(fbeValue." + *field->name + ");");
@@ -6195,11 +6195,11 @@ void GeneratorCSharp::GenerateStructModel(const std::string& domain, const std::
     // Generate struct model Serialize() method
     WriteLine();
     WriteLineIndent("// Serialize the struct value");
-    WriteLineIndent("public long Serialize(" + *s->name + " value)");
+    WriteLineIndent("public long Serialize(ref " + *s->name + " value)");
     WriteLineIndent("{");
     Indent(1);
     WriteLineIndent("long fbeBegin = CreateBegin();");
-    WriteLineIndent("model.Set(value);");
+    WriteLineIndent("model.Set(ref value);");
     WriteLineIndent("long fbeFullSize = CreateEnd(fbeBegin);");
     WriteLineIndent("return fbeFullSize;");
     Indent(-1);
@@ -6550,7 +6550,7 @@ void GeneratorCSharp::GenerateStructModelFinal(const std::string& domain, const 
     // Generate struct model final Serialize() method
     WriteLine();
     WriteLineIndent("// Serialize the struct value");
-    WriteLineIndent("public long Serialize(" + *s->name + " value)");
+    WriteLineIndent("public long Serialize(ref " + *s->name + " value)");
     WriteLineIndent("{");
     Indent(1);
     WriteLineIndent("long fbeInitialSize = Buffer.Size;");
@@ -6564,7 +6564,7 @@ void GeneratorCSharp::GenerateStructModelFinal(const std::string& domain, const 
     WriteLineIndent("return 0;");
     Indent(-1);
     WriteLine();
-    WriteLineIndent("fbeStructSize = (uint)(8 + _model.Set(value));");
+    WriteLineIndent("fbeStructSize = (uint)(8 + _model.Set(ref value));");
     WriteLineIndent("Buffer.Resize(fbeInitialSize + fbeStructSize);");
     WriteLine();
     WriteLineIndent("Write(_model.FBEOffset - 8, fbeStructSize);");
@@ -6754,7 +6754,7 @@ void GeneratorCSharp::GenerateSender(const std::string& domain, const std::share
 
     // Generate send method
     WriteLineIndent("public long Send<T>(ref T obj) { return SendListener(this, ref obj); }");
-    WriteLineIndent("public long SendListener(" + listener + " listener, object obj)");
+    WriteLineIndent("public long SendListener<T>(" + listener + " listener, ref T obj)");
     WriteLineIndent("{");
     Indent(1);
     if (p->body)
