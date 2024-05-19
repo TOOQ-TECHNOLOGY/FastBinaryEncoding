@@ -856,7 +856,7 @@ void GeneratorCSharp::GenerateFBEFieldModelBase()
         public abstract void Get(out T value, T defaults);
 
         // Set the value
-        public abstract void Set(T value);
+        public abstract void Set(ref T value);
 
         // Create field model of the given type
         public static FieldModelReferenceType<T> CreateFieldModel(BaseTypes type, Buffer buffer, long offset)
@@ -1469,7 +1469,7 @@ void GeneratorCSharp::GenerateFBEFieldModelArray(bool valueType, bool optional)
         }
 
         // Set the array
-        public void Set(_ARGS_[] values)
+        public void Set(ref _ARGS_[] values)
         {
             Debug.Assert((values != null), "Invalid values parameter!");
             if (values == null)
@@ -1482,13 +1482,13 @@ void GeneratorCSharp::GenerateFBEFieldModelArray(bool valueType, bool optional)
             var fbeModel = this[0];
             for (long i = 0; (i < values.Length) && (i < _size); i++)
             {
-                fbeModel.Set(values[i]);
+                fbeModel.Set(ref values[i]);
                 fbeModel.FBEShift(fbeModel.FBESize);
             }
         }
 
         // Set the array as List
-        public void Set(List<_ARGS_> values)
+        public void Set(ref List<_ARGS_> values)
         {
             Debug.Assert((values != null), "Invalid values parameter!");
             if (values == null)
@@ -1501,7 +1501,8 @@ void GeneratorCSharp::GenerateFBEFieldModelArray(bool valueType, bool optional)
             var fbeModel = this[0];
             for (long i = 0; (i < values.Count) && (i < _size); i++)
             {
-                fbeModel.Set(values[(int)i]);
+                var v = values[(int)i];
+                fbeModel.Set(ref v);
                 fbeModel.FBEShift(fbeModel.FBESize);
             }
         }
@@ -2010,9 +2011,11 @@ void GeneratorCSharp::GenerateFBEFieldModelMap(bool valueTypeKey, bool valueType
             var fbeModel = Resize(values.Count);
             foreach (var value in values)
             {
-                fbeModel.Key.Set(value.Key);
+                var keyRef = value.Key;
+                var valueRef = value.Value;
+                fbeModel.Key.Set(ref keyRef);
                 fbeModel.Key.FBEShift(fbeModel.Key.FBESize + fbeModel.Value.FBESize);
-                fbeModel.Value.Set(value.Value);
+                fbeModel.Value.Set(ref valueRef);
                 fbeModel.Value.FBEShift(fbeModel.Key.FBESize + fbeModel.Value.FBESize);
             }
         }
@@ -2031,9 +2034,11 @@ void GeneratorCSharp::GenerateFBEFieldModelMap(bool valueTypeKey, bool valueType
             var fbeModel = Resize(values.Count);
             foreach (var value in values)
             {
-                fbeModel.Key.Set(value.Key);
+                var keyRef = value.Key
+                var valueRef = value.Value;
+                fbeModel.Key.Set(ref keyRef);
                 fbeModel.Key.FBEShift(fbeModel.Key.FBESize + fbeModel.Value.FBESize);
-                fbeModel.Value.Set(value.Value);
+                fbeModel.Value.Set(ref valueRef);
                 fbeModel.Value.FBEShift(fbeModel.Key.FBESize + fbeModel.Value.FBESize);
             }
         }
