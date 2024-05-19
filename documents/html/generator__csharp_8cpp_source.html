@@ -1410,14 +1410,14 @@ $(function() {
 <div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;<span class="stringliteral">        }</span></div>
 <div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;<span class="stringliteral">        // Set the optional value</span></div>
-<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="stringliteral">        public void Set(_ARGS_ optional)</span></div>
+<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="stringliteral">        public void Set(ref _ARGS_ optional)</span></div>
 <div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;<span class="stringliteral">        {</span></div>
 <div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;<span class="stringliteral">            long fbeBegin = SetBegin(optional_HAS_VALUE_);</span></div>
 <div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;<span class="stringliteral">            if (fbeBegin == 0)</span></div>
 <div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;<span class="stringliteral">                return;</span></div>
 <div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;<span class="stringliteral">            if (optional_HAS_VALUE_)</span></div>
-<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;<span class="stringliteral">                Value.Set(optional_VALUE_);</span></div>
+<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;<span class="stringliteral">                Value.Set(ref optional_VALUE_);</span></div>
 <div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;<span class="stringliteral">            SetEnd(fbeBegin);</span></div>
 <div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;<span class="stringliteral">        }</span></div>
@@ -4780,7 +4780,7 @@ $(function() {
 <div class="line"><a name="l04716"></a><span class="lineno"> 4716</span>&#160;<span class="stringliteral">        }</span></div>
 <div class="line"><a name="l04717"></a><span class="lineno"> 4717</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l04718"></a><span class="lineno"> 4718</span>&#160;<span class="stringliteral">        // Set the value</span></div>
-<div class="line"><a name="l04719"></a><span class="lineno"> 4719</span>&#160;<span class="stringliteral">        public override void Set(_ENUM_NAME_ value)</span></div>
+<div class="line"><a name="l04719"></a><span class="lineno"> 4719</span>&#160;<span class="stringliteral">        public override void Set(ref _ENUM_NAME_ value)</span></div>
 <div class="line"><a name="l04720"></a><span class="lineno"> 4720</span>&#160;<span class="stringliteral">        {</span></div>
 <div class="line"><a name="l04721"></a><span class="lineno"> 4721</span>&#160;<span class="stringliteral">            Debug.Assert(((_buffer.Offset + FBEOffset + FBESize) &lt;= _buffer.Size), &quot;Model is broken!&quot;);</span></div>
 <div class="line"><a name="l04722"></a><span class="lineno"> 4722</span>&#160;<span class="stringliteral">            if ((_buffer.Offset + FBEOffset + FBESize) &gt; _buffer.Size)</span></div>
@@ -5165,7 +5165,7 @@ $(function() {
 <div class="line"><a name="l05101"></a><span class="lineno"> 5101</span>&#160;<span class="stringliteral">        }</span></div>
 <div class="line"><a name="l05102"></a><span class="lineno"> 5102</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l05103"></a><span class="lineno"> 5103</span>&#160;<span class="stringliteral">        // Set the value</span></div>
-<div class="line"><a name="l05104"></a><span class="lineno"> 5104</span>&#160;<span class="stringliteral">        public override void Set(_FLAGS_NAME_ value)</span></div>
+<div class="line"><a name="l05104"></a><span class="lineno"> 5104</span>&#160;<span class="stringliteral">        public override void Set(ref _FLAGS_NAME_ value)</span></div>
 <div class="line"><a name="l05105"></a><span class="lineno"> 5105</span>&#160;<span class="stringliteral">        {</span></div>
 <div class="line"><a name="l05106"></a><span class="lineno"> 5106</span>&#160;<span class="stringliteral">            Debug.Assert(((_buffer.Offset + FBEOffset + FBESize) &lt;= _buffer.Size), &quot;Model is broken!&quot;);</span></div>
 <div class="line"><a name="l05107"></a><span class="lineno"> 5107</span>&#160;<span class="stringliteral">            if ((_buffer.Offset + FBEOffset + FBESize) &gt; _buffer.Size)</span></div>
@@ -6162,7 +6162,7 @@ $(function() {
 <div class="line"><a name="l06098"></a><span class="lineno"> 6098</span>&#160;            <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;parent.SetFields(ref fbeValue.parent);&quot;</span>);</div>
 <div class="line"><a name="l06099"></a><span class="lineno"> 6099</span>&#160;        <span class="keywordflow">if</span> (s-&gt;body)</div>
 <div class="line"><a name="l06100"></a><span class="lineno"> 6100</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; field : s-&gt;body-&gt;fields)</div>
-<div class="line"><a name="l06101"></a><span class="lineno"> 6101</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(*field-&gt;name + <span class="stringliteral">&quot;.Set(fbeValue.&quot;</span> + *field-&gt;name + <span class="stringliteral">&quot;);&quot;</span>);</div>
+<div class="line"><a name="l06101"></a><span class="lineno"> 6101</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(*field-&gt;name + <span class="stringliteral">&quot;.Set(ref fbeValue.&quot;</span> + *field-&gt;name + <span class="stringliteral">&quot;);&quot;</span>);</div>
 <div class="line"><a name="l06102"></a><span class="lineno"> 6102</span>&#160;    }</div>
 <div class="line"><a name="l06103"></a><span class="lineno"> 6103</span>&#160;    <a class="code" href="class_f_b_e_1_1_generator.html#af359602bb4cc0a2332ae2082a25616cf">Indent</a>(-1);</div>
 <div class="line"><a name="l06104"></a><span class="lineno"> 6104</span>&#160;    <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;}&quot;</span>);</div>
@@ -6534,7 +6534,7 @@ $(function() {
 <div class="line"><a name="l06470"></a><span class="lineno"> 6470</span>&#160;            {</div>
 <div class="line"><a name="l06471"></a><span class="lineno"> 6471</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#a9cddebdbffb75de7aca0c6a54cad4729">WriteLine</a>();</div>
 <div class="line"><a name="l06472"></a><span class="lineno"> 6472</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(*field-&gt;name + <span class="stringliteral">&quot;.FBEOffset = fbeCurrentOffset;&quot;</span>);</div>
-<div class="line"><a name="l06473"></a><span class="lineno"> 6473</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;fbeFieldSize = &quot;</span> + *field-&gt;name + <span class="stringliteral">&quot;.Set(fbeValue.&quot;</span> + *field-&gt;name + <span class="stringliteral">&quot;);&quot;</span>);</div>
+<div class="line"><a name="l06473"></a><span class="lineno"> 6473</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;fbeFieldSize = &quot;</span> + *field-&gt;name + <span class="stringliteral">&quot;.Set(ref fbeValue.&quot;</span> + *field-&gt;name + <span class="stringliteral">&quot;);&quot;</span>);</div>
 <div class="line"><a name="l06474"></a><span class="lineno"> 6474</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;fbeCurrentOffset += fbeFieldSize;&quot;</span>);</div>
 <div class="line"><a name="l06475"></a><span class="lineno"> 6475</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;fbeCurrentSize += fbeFieldSize;&quot;</span>);</div>
 <div class="line"><a name="l06476"></a><span class="lineno"> 6476</span>&#160;            }</div>
@@ -7659,7 +7659,7 @@ $(function() {
 <div class="line"><a name="l07595"></a><span class="lineno"> 7595</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;{&quot;</span>);</div>
 <div class="line"><a name="l07596"></a><span class="lineno"> 7596</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#af359602bb4cc0a2332ae2082a25616cf">Indent</a>(1);</div>
 <div class="line"><a name="l07597"></a><span class="lineno"> 7597</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;// Serialize the value into the FBE stream&quot;</span>);</div>
-<div class="line"><a name="l07598"></a><span class="lineno"> 7598</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;long serialized = &quot;</span> + *s-&gt;name + <span class="stringliteral">&quot;SenderModel.Serialize(value);&quot;</span>);</div>
+<div class="line"><a name="l07598"></a><span class="lineno"> 7598</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;long serialized = &quot;</span> + *s-&gt;name + <span class="stringliteral">&quot;SenderModel.Serialize(ref value);&quot;</span>);</div>
 <div class="line"><a name="l07599"></a><span class="lineno"> 7599</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;Debug.Assert((serialized &gt; 0), \&quot;&quot;</span> + domain + *p-&gt;name + <span class="stringliteral">&quot;.&quot;</span> + *s-&gt;name + <span class="stringliteral">&quot; serialization failed!\&quot;);&quot;</span>);</div>
 <div class="line"><a name="l07600"></a><span class="lineno"> 7600</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#ab3b100edfa26f498801b910bbd4b49bd">WriteLineIndent</a>(<span class="stringliteral">&quot;Debug.Assert(&quot;</span> + *s-&gt;name + <span class="stringliteral">&quot;SenderModel.Verify(), \&quot;&quot;</span> + domain + *p-&gt;name + <span class="stringliteral">&quot;.&quot;</span> + *s-&gt;name + <span class="stringliteral">&quot; validation failed!\&quot;);&quot;</span>);</div>
 <div class="line"><a name="l07601"></a><span class="lineno"> 7601</span>&#160;                <a class="code" href="class_f_b_e_1_1_generator.html#a9cddebdbffb75de7aca0c6a54cad4729">WriteLine</a>();</div>
