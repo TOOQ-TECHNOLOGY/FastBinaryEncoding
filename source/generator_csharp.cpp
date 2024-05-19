@@ -1345,14 +1345,14 @@ void GeneratorCSharp::GenerateFBEFieldModelOptional(bool valueType)
         }
 
         // Set the optional value
-        public void Set(_ARGS_ optional)
+        public void Set(ref _ARGS_ optional)
         {
             long fbeBegin = SetBegin(optional_HAS_VALUE_);
             if (fbeBegin == 0)
                 return;
 
             if (optional_HAS_VALUE_)
-                Value.Set(optional_VALUE_);
+                Value.Set(ref optional_VALUE_);
 
             SetEnd(fbeBegin);
         }
@@ -4716,7 +4716,7 @@ void GeneratorCSharp::GenerateEnumFieldModel(const std::string& domain, const st
         }
 
         // Set the value
-        public override void Set(_ENUM_NAME_ value)
+        public override void Set(ref _ENUM_NAME_ value)
         {
             Debug.Assert(((_buffer.Offset + FBEOffset + FBESize) <= _buffer.Size), "Model is broken!");
             if ((_buffer.Offset + FBEOffset + FBESize) > _buffer.Size)
@@ -5101,7 +5101,7 @@ void GeneratorCSharp::GenerateFlagsFieldModel(const std::string& domain, const s
         }
 
         // Set the value
-        public override void Set(_FLAGS_NAME_ value)
+        public override void Set(ref _FLAGS_NAME_ value)
         {
             Debug.Assert(((_buffer.Offset + FBEOffset + FBESize) <= _buffer.Size), "Model is broken!");
             if ((_buffer.Offset + FBEOffset + FBESize) > _buffer.Size)
@@ -6098,7 +6098,7 @@ void GeneratorCSharp::GenerateStructFieldModel(const std::string& domain, const 
             WriteLineIndent("parent.SetFields(ref fbeValue.parent);");
         if (s->body)
             for (const auto& field : s->body->fields)
-                WriteLineIndent(*field->name + ".Set(fbeValue." + *field->name + ");");
+                WriteLineIndent(*field->name + ".Set(ref fbeValue." + *field->name + ");");
     }
     Indent(-1);
     WriteLineIndent("}");
@@ -6470,7 +6470,7 @@ void GeneratorCSharp::GenerateStructFinalModel(const std::string& domain, const 
             {
                 WriteLine();
                 WriteLineIndent(*field->name + ".FBEOffset = fbeCurrentOffset;");
-                WriteLineIndent("fbeFieldSize = " + *field->name + ".Set(fbeValue." + *field->name + ");");
+                WriteLineIndent("fbeFieldSize = " + *field->name + ".Set(ref fbeValue." + *field->name + ");");
                 WriteLineIndent("fbeCurrentOffset += fbeFieldSize;");
                 WriteLineIndent("fbeCurrentSize += fbeFieldSize;");
             }
@@ -7595,7 +7595,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent("// Serialize the value into the FBE stream");
-                WriteLineIndent("long serialized = " + *s->name + "SenderModel.Serialize(value);");
+                WriteLineIndent("long serialized = " + *s->name + "SenderModel.Serialize(ref value);");
                 WriteLineIndent("Debug.Assert((serialized > 0), \"" + domain + *p->name + "." + *s->name + " serialization failed!\");");
                 WriteLineIndent("Debug.Assert(" + *s->name + "SenderModel.Verify(), \"" + domain + *p->name + "." + *s->name + " validation failed!\");");
                 WriteLine();
