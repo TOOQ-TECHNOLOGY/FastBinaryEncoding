@@ -1061,7 +1061,7 @@ void GeneratorCSharp::GenerateFBEFieldModelBytes()
         }
 
         // Set the bytes value
-        public override void Set(MemoryStream value)
+        public override void Set(ref MemoryStream value)
         {
             Debug.Assert((value != null), "Invalid bytes value!");
             if (value == null)
@@ -1170,7 +1170,7 @@ void GeneratorCSharp::GenerateFBEFieldModelString()
         }
 
         // Set the string value
-        public override void Set(string value)
+        public override void Set(ref string value)
         {
             Debug.Assert((value != null), "Invalid string value!");
             if (value == null)
@@ -1351,9 +1351,11 @@ void GeneratorCSharp::GenerateFBEFieldModelOptional(bool valueType)
             if (fbeBegin == 0)
                 return;
 
-            if (optional_HAS_VALUE_)
-                Value.Set(ref optional_VALUE_);
-
+            if (optional_HAS_VALUE_) 
+            {
+                var x = optional_VALUE_;
+                Value.Set(ref x);
+            }
             SetEnd(fbeBegin);
         }
     }
@@ -1727,7 +1729,7 @@ void GeneratorCSharp::GenerateFBEFieldModelVector(bool valueType, bool optional)
         }
 
         // Set the vector as List
-        public void Set(List<_ARGS_> values)
+        public void Set(ref List<_ARGS_> values)
         {
             Debug.Assert((values != null), "Invalid values parameter!");
             if (values == null)
@@ -1738,15 +1740,16 @@ void GeneratorCSharp::GenerateFBEFieldModelVector(bool valueType, bool optional)
                 return;
 
             var fbeModel = Resize(values.Count);
-            foreach (var value in values)
+            for (int i = 0; i < values.Count; i++)
             {
-                fbeModel.Set(value);
+                var x = values[i];
+                fbeModel.Set(ref x);
                 fbeModel.FBEShift(fbeModel.FBESize);
             }
         }
 
         // Set the vector as LinkedList
-        public void Set(LinkedList<_ARGS_> values)
+        public void Set(ref LinkedList<_ARGS_> values)
         {
             Debug.Assert((values != null), "Invalid values parameter!");
             if (values == null)
@@ -1757,10 +1760,13 @@ void GeneratorCSharp::GenerateFBEFieldModelVector(bool valueType, bool optional)
                 return;
 
             var fbeModel = Resize(values.Count);
-            foreach (var value in values)
+            var obj = values.First;
+            while(obj != null) 
             {
-                fbeModel.Set(value);
+                var val = obj.Value;
+                fbeModel.Set(ref val);
                 fbeModel.FBEShift(fbeModel.FBESize);
+                obj = obj.Next;
             }
         }
 
@@ -1776,11 +1782,13 @@ void GeneratorCSharp::GenerateFBEFieldModelVector(bool valueType, bool optional)
                 return;
 
             var fbeModel = Resize(values.Count);
-            foreach (var value in values)
+            var e = values.GetEnumerator();
+            while(e.MoveNext())
             {
-                fbeModel.Set(value);
+                var obj = e.Current;
+                fbeModel.Set(ref obj);
                 fbeModel.FBEShift(fbeModel.FBESize);
-            }
+            }    
         }
     }
 )CODE";
@@ -1998,7 +2006,7 @@ void GeneratorCSharp::GenerateFBEFieldModelMap(bool valueTypeKey, bool valueType
         }
 
         // Set the map as Dictionary
-        public void Set(Dictionary<_ARGS_KEY_, _ARGS_VALUE_> values)
+        public void Set(ref Dictionary<_ARGS_KEY_, _ARGS_VALUE_> values)
         {
             Debug.Assert((values != null), "Invalid values parameter!");
             if (values == null)
@@ -2874,7 +2882,7 @@ void GeneratorCSharp::GenerateFBEFinalModelVector(bool valueType, bool optional)
         }
 
         // Set the vector as List
-        public long Set(List<_ARGS_> values)
+        public long Set(ref List<_ARGS_> values)
         {
             Debug.Assert((values != null), "Invalid values parameter!");
             if (values == null)
