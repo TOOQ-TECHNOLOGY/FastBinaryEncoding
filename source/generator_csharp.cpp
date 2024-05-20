@@ -7637,10 +7637,10 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
         CppCommon::StringUtils::ReplaceAll(response_name, ".", "");
 
         WriteLine();
-        WriteLineIndent("public bool OnReceiveResponse(" + response_type + " response)");
+        WriteLineIndent("public bool OnReceiveResponse(ref " + response_type + " response)");
         WriteLineIndent("{");
         Indent(1);
-        WriteLineIndent("ReceivedResponse_" + response_name + "?.Invoke(response);");
+        WriteLineIndent("ReceivedResponse_" + response_name + "?.Invoke(ref response);");
         WriteLine();
         if (p->body)
         {
@@ -7700,7 +7700,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 {
                     if (!found)
                         WriteLine();
-                    WriteLineIndent("public bool OnReceiveResponse(" + struct_response_type + " response) { ReceivedResponse_" + struct_response_name + "?.Invoke(response); return false; }");
+                    WriteLineIndent("public bool OnReceiveResponse(ref " + struct_response_type + " response) { ReceivedResponse_" + struct_response_name + "?.Invoke(ref response); return false; }");
                     cache.insert(struct_response_type);
                     found = true;
                 }
