@@ -7992,7 +7992,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 WriteLineIndent("}");
                 WriteLine();
                 WriteLineIndent("// Call receive handler with deserialized value");
-                WriteLineIndent("listener.OnReceive(" + *s->name + "ReceiverValue);");
+                WriteLineIndent("listener.OnReceive(ref " + *s->name + "ReceiverValue);");
                 WriteLineIndent("return true;");
                 Indent(-1);
                 WriteLineIndent("}");
@@ -8028,7 +8028,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
         CppCommon::StringUtils::ReplaceAll(response_name, ".", "");
 
         WriteLineIndent("public delegate void ReceiveResponseHandler_" + response_name + "(ref " + response_type + " response);");
-        WriteLineIndent("public event ReceiveResponseHandler_" + response_name + " ReceivedResponse_" + response_name + " = (ref " + response_type + " response) = > {}; ");
+        WriteLineIndent("public event ReceiveResponseHandler_" + response_name + " ReceivedResponse_" + response_name + ";"
     }
     // Generate remaining response events
     if (p->body)
@@ -8045,7 +8045,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 if ((responses.find(*s->name) == responses.end()) && (cache.find(struct_response_type) == cache.end()))
                 {
                     WriteLineIndent("public delegate void ReceiveResponseHandler_" + struct_response_name + "(ref " + struct_response_type + " response);");
-                    WriteLineIndent("public event ReceiveResponseHandler_" + struct_response_name + " ReceivedResponse_" + struct_response_name + " = (ref " + struct_response_type + " response) = > {}; ");
+                    WriteLineIndent("public event ReceiveResponseHandler_" + struct_response_name + " ReceivedResponse_" + struct_response_name + ";");
                     cache.insert(struct_response_type);
                 }
             }
@@ -8060,7 +8060,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
         CppCommon::StringUtils::ReplaceAll(reject_name, ".", "");
 
         WriteLineIndent("public delegate void ReceiveRejectHandler_" + reject_name + "(ref " + reject_type + " reject);");
-        WriteLineIndent("public event ReceiveRejectHandler_" + reject_name + " ReceivedReject_" + reject_name + " = (ref " + reject_type + " reject) => {};");
+        WriteLineIndent("public event ReceiveRejectHandler_" + reject_name + " ReceivedReject_" + reject_name + ";");
     }
     // Generate remaining reject events
     if (p->body)
@@ -8077,7 +8077,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 if ((rejects.find(*s->name) == rejects.end()) && (cache.find(struct_reject_type) == cache.end()))
                 {
                     WriteLineIndent("public delegate void ReceiveRejectHandler_" + struct_reject_name + "(ref " + struct_reject_type + " reject);");
-                    WriteLineIndent("public event ReceiveRejectHandler_" + struct_reject_name + " ReceivedReject_" + struct_reject_name + " = (ref " + struct_reject_type + " reject) = > {}; ");
+                    WriteLineIndent("public event ReceiveRejectHandler_" + struct_reject_name + " ReceivedReject_" + struct_reject_name + ";");
                     cache.insert(struct_reject_type);
                 }
             }
@@ -8099,7 +8099,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 if (cache.find(struct_notify_type) == cache.end())
                 {
                     WriteLineIndent("public delegate void ReceiveNotifyHandler_" + struct_notify_name + "(ref " + struct_notify_type + " notify);");
-                    WriteLineIndent("public event ReceiveNotifyHandler_" + struct_notify_name + " ReceivedNotify_" + struct_notify_name + " = (ref " + struct_notify_type + " notify) = > {}; ");
+                    WriteLineIndent("public event ReceiveNotifyHandler_" + struct_notify_name + " ReceivedNotify_" + struct_notify_name + ";");
                     cache.insert(struct_notify_type);
                 }
             }
