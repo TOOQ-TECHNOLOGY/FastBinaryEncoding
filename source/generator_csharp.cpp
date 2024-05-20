@@ -2042,7 +2042,7 @@ void GeneratorCSharp::GenerateFBEFieldModelMap(bool valueTypeKey, bool valueType
             var fbeModel = Resize(values.Count);
             foreach (var value in values)
             {
-                var keyRef = value.Key
+                var keyRef = value.Key;
                 var valueRef = value.Value;
                 fbeModel.Key.Set(ref keyRef);
                 fbeModel.Key.FBEShift(fbeModel.Key.FBESize + fbeModel.Value.FBESize);
