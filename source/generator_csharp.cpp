@@ -6894,7 +6894,7 @@ void GeneratorCSharp::GenerateReceiver(const std::string& domain, const std::sha
             if (s->message)
             {
                 std::string struct_name = ConvertTypeName(domain, *p->name, *s->name, false);
-                WriteLineIndent("void OnReceive(" + struct_name + " value);");
+                WriteLineIndent("void OnReceive(ref " + struct_name + " value);");
             }
         }
     }
@@ -7022,7 +7022,7 @@ void GeneratorCSharp::GenerateReceiver(const std::string& domain, const std::sha
                 WriteLineIndent("}");
                 WriteLine();
                 WriteLineIndent("// Call receive handler with deserialized value");
-                WriteLineIndent("listener.OnReceive(" + *s->name + "Value);");
+                WriteLineIndent("listener.OnReceive(ref " + *s->name + "Value);");
                 WriteLineIndent("return true;");
                 Indent(-1);
                 WriteLineIndent("}");
@@ -7057,7 +7057,7 @@ void GeneratorCSharp::GenerateReceiver(const std::string& domain, const std::sha
             if (s->message)
             {
                 std::string struct_name = ConvertTypeName(domain, *p->name, *s->name, false);
-                WriteLineIndent("public void OnReceive(" + struct_name + " value) {}");
+                WriteLineIndent("public void OnReceive(ref " + struct_name + " value) {}");
             }
         }
     }
@@ -7822,7 +7822,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 {
                     if (!found)
                         WriteLine();
-                    WriteLineIndent("public bool OnReceiveReject(" + struct_reject_type + " reject) { ReceivedReject_" + struct_reject_name + "?.Invoke(reject); return false; }");
+                    WriteLineIndent("public bool OnReceiveReject(ref " + struct_reject_type + " reject) { ReceivedReject_" + struct_reject_name + "?.Invoke(ref reject); return false; }");
                     cache.insert(struct_reject_type);
                     found = true;
                 }
@@ -7847,7 +7847,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 {
                     if (!found)
                         WriteLine();
-                    WriteLineIndent("public void OnReceiveNotify(" + struct_notify_type + " notify) { ReceivedNotify_" + struct_notify_name + "?.Invoke(notify); }");
+                    WriteLineIndent("public void OnReceiveNotify(ref " + struct_notify_type + " notify) { ReceivedNotify_" + struct_notify_name + "?.Invoke(ref notify); }");
                     cache.insert(struct_notify_type);
                     found = true;
                 }
@@ -7872,7 +7872,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
                 {
                     if (!found)
                         WriteLine();
-                    WriteLineIndent("public void OnReceive(" + struct_response_type + " value) { if (!OnReceiveResponse(value) && !OnReceiveReject(value)) OnReceiveNotify(value); }");
+                    WriteLineIndent("public void OnReceive(ref " + struct_response_type + " value) { if (!OnReceiveResponse(ref value) && !OnReceiveReject(ref value)) OnReceiveNotify(ref value); }");
                     cache.insert(struct_response_type);
                     found = true;
                 }
