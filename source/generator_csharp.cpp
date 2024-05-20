@@ -8028,7 +8028,7 @@ void GeneratorCSharp::GenerateClient(const std::string& domain, const std::share
         CppCommon::StringUtils::ReplaceAll(response_name, ".", "");
 
         WriteLineIndent("public delegate void ReceiveResponseHandler_" + response_name + "(ref " + response_type + " response);");
-        WriteLineIndent("public event ReceiveResponseHandler_" + response_name + " ReceivedResponse_" + response_name + ";"
+        WriteLineIndent("public event ReceiveResponseHandler_" + response_name + " ReceivedResponse_" + response_name + ";");
     }
     // Generate remaining response events
     if (p->body)
