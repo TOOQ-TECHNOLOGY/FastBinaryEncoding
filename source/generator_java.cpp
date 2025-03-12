@@ -830,7 +830,7 @@ public final class FieldModelDecimal extends FieldModel
             magnitude[magnitude.length - i - 1] = temp;
         }
 
-        var unscaled = new java.math.BigInteger(signum, magnitude);
+        java.math.BigInteger unscaled = new java.math.BigInteger(signum, magnitude);
 
         return new java.math.BigDecimal(unscaled, scale);
     }
@@ -989,8 +989,8 @@ public final class FieldModelTimestamp extends FieldModel
     public long fbeSize() { return 8; }
 
     // Get the timestamp value
-    public java.time.Instant get() { return get(java.time.Instant.EPOCH); }
-    public java.time.Instant get(java.time.Instant defaults)
+    public java.util.Date get() { return get(java.util.Date(0)); }
+    public java.util.Date get(java.util.Date defaults)
     {
         assert (defaults != null) : "Invalid default timestamp value!";
         if (defaults == null)
@@ -1000,11 +1000,11 @@ public final class FieldModelTimestamp extends FieldModel
             return defaults;
 
         long nanoseconds = readInt64(fbeOffset());
-        return java.time.Instant.ofEpochSecond(nanoseconds / 1000000000, nanoseconds % 1000000000);
+        return new java.util.Date(nanoseconds / 1000000);
     }
 
     // Set the timestamp value
-    public void set(java.time.Instant value)
+    public void set(java.util.Date value)
     {
         assert (value != null) : "Invalid timestamp value!";
         if (value == null)
@@ -1014,9 +1014,9 @@ public final class FieldModelTimestamp extends FieldModel
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        long nanoseconds = value.getEpochSecond() * 1000000000 + value.getNano();
+        long nanoseconds = value.getTime() * 1000;
         write(fbeOffset(), nanoseconds);
-    }
+    }   
 }
 )CODE";
 
@@ -1525,9 +1525,9 @@ public final class FieldModelArray_NAME_ extends _DOMAIN_fbe.FieldModel
     // Get the array
     public _ARRAY_ get()
     {
-        var values = _INIT_;
+        _ARRAY_ values = _INIT_;
 
-        var fbeModel = getItem(0);
+        _MODEL_  fbeModel = getItem(0);
         for (long i = 0; i < _size; i++)
         {
             values[(int)i] = fbeModel.get();
@@ -1543,7 +1543,7 @@ public final class FieldModelArray_NAME_ extends _DOMAIN_fbe.FieldModel
         if (values == null)
             throw new IllegalArgumentException("Invalid values parameter!");
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = 0; (i < values.length) && (i < _size); i++)
         {
             values[(int)i] = fbeModel.get();
@@ -1561,7 +1561,7 @@ public final class FieldModelArray_NAME_ extends _DOMAIN_fbe.FieldModel
         values.clear();
         values.ensureCapacity((int)_size);
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = _size; i-- > 0;)
         {
             _TYPE_ value = fbeModel.get();
@@ -1581,7 +1581,7 @@ public final class FieldModelArray_NAME_ extends _DOMAIN_fbe.FieldModel
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = 0; (i < values.length) && (i < _size); i++)
         {
             fbeModel.set(values[(int)i]);
@@ -1600,7 +1600,7 @@ public final class FieldModelArray_NAME_ extends _DOMAIN_fbe.FieldModel
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = 0; (i < values.size()) && (i < _size); i++)
         {
             fbeModel.set(values.get((int)i));
@@ -1781,7 +1781,7 @@ public final class FieldModelVector_NAME_ extends _DOMAIN_fbe.FieldModel
 
         values.ensureCapacity((int)fbeVectorSize);
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = fbeVectorSize; i-- > 0;)
         {
             _TYPE_ value = fbeModel.get();
@@ -1803,7 +1803,7 @@ public final class FieldModelVector_NAME_ extends _DOMAIN_fbe.FieldModel
         if (fbeVectorSize == 0)
             return;
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = fbeVectorSize; i-- > 0;)
         {
             _TYPE_ value = fbeModel.get();
@@ -1825,7 +1825,7 @@ public final class FieldModelVector_NAME_ extends _DOMAIN_fbe.FieldModel
         if (fbeVectorSize == 0)
             return;
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = fbeVectorSize; i-- > 0;)
         {
             _TYPE_ value = fbeModel.get();
@@ -1845,8 +1845,8 @@ public final class FieldModelVector_NAME_ extends _DOMAIN_fbe.FieldModel
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = resize(values.size());
-        for (var value : values)
+        _MODEL_ fbeModel = resize(values.size());
+        for (_TYPE_ value : values)
         {
             fbeModel.set(value);
             fbeModel.fbeShift(fbeModel.fbeSize());
@@ -1864,8 +1864,8 @@ public final class FieldModelVector_NAME_ extends _DOMAIN_fbe.FieldModel
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = resize(values.size());
-        for (var value : values)
+        _MODEL_ fbeModel = resize(values.size());
+        for (_TYPE_ value : values)
         {
             fbeModel.set(value);
             fbeModel.fbeShift(fbeModel.fbeSize());
@@ -1883,8 +1883,8 @@ public final class FieldModelVector_NAME_ extends _DOMAIN_fbe.FieldModel
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = resize(values.size());
-        for (var value : values)
+        _MODEL_ fbeModel = resize(values.size());
+        for (_TYPE_ value : values)
         {
             fbeModel.set(value);
             fbeModel.fbeShift(fbeModel.fbeSize());
@@ -2073,7 +2073,7 @@ public final class FieldModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Field
         if (fbeMapSize == 0)
             return;
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = fbeMapSize; i-- > 0;)
         {
             _KEY_TYPE_ key = fbeModel.getKey().get();
@@ -2097,7 +2097,7 @@ public final class FieldModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Field
         if (fbeMapSize == 0)
             return;
 
-        var fbeModel = getItem(0);
+        _MODEL_ fbeModel = getItem(0);
         for (long i = fbeMapSize; i-- > 0;)
         {
             _KEY_TYPE_ key = fbeModel.getKey().get();
@@ -2119,8 +2119,8 @@ public final class FieldModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Field
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = resize(values.size());
-        for (var value : values.entrySet())
+        _DOMAIN_fbe.Pair<_KEY_MODEL_, _VALUE_MODEL_> fbeModel = resize(values.size());
+        for (Map.Entry<_KEY_TYPE_, _VALUE_TYPE_> value : values.entrySet())
         {
             fbeModel.getKey().set(value.getKey());
             fbeModel.getKey().fbeShift(fbeModel.getKey().fbeSize() + fbeModel.getValue().fbeSize());
@@ -2140,8 +2140,8 @@ public final class FieldModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Field
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
             return;
 
-        var fbeModel = resize(values.size());
-        for (var value : values.entrySet())
+        _DOMAIN_fbe.Pair<_KEY_MODEL_, _VALUE_MODEL_> fbeModel = resize(values.size());
+        for (Map.Entry<_KEY_TYPE_, _VALUE_TYPE_> value : values.entrySet())
         {
             fbeModel.getKey().set(value.getKey());
             fbeModel.getKey().fbeShift(fbeModel.getKey().fbeSize() + fbeModel.getValue().fbeSize());
@@ -2491,7 +2491,7 @@ public final class FinalModelDecimal extends FinalModel
             magnitude[magnitude.length - i - 1] = temp;
         }
 
-        var unscaled = new java.math.BigInteger(signum, magnitude);
+        java.math.BigInteger unscaled = new java.math.BigInteger(signum, magnitude);
 
         size.value = fbeSize();
         return new java.math.BigDecimal(unscaled, scale);
@@ -2650,7 +2650,7 @@ public final class FinalModelTimestamp extends FinalModel
     public FinalModelTimestamp(Buffer buffer, long offset) { super(buffer, offset); }
 
     // Get the allocation size
-    public long fbeAllocationSize(java.time.Instant value) { return fbeSize(); }
+    public long fbeAllocationSize(java.util.Date value) { return fbeSize(); }
 
     // Get the final size
     @Override
@@ -2667,18 +2667,18 @@ public final class FinalModelTimestamp extends FinalModel
     }
 
     // Get the timestamp value
-    public java.time.Instant get(Size size)
+    public java.util.Date get(Size size)
     {
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
-            return java.time.Instant.EPOCH;
+            return new java.util.Date(0);
 
         size.value = fbeSize();
         long nanoseconds = readInt64(fbeOffset());
-        return java.time.Instant.ofEpochSecond(nanoseconds / 1000000000, nanoseconds % 1000000000);
+        return new java.util.Date(nanoseconds / 1000000);
     }
 
     // Set the timestamp value
-    public long set(java.time.Instant value)
+    public long set(java.util.Date value)
     {
         assert ((_buffer.getOffset() + fbeOffset() + fbeSize()) <= _buffer.getSize()) : "Model is broken!";
         if ((_buffer.getOffset() + fbeOffset() + fbeSize()) > _buffer.getSize())
@@ -3078,7 +3078,7 @@ public final class FinalModelArray_NAME_ extends _DOMAIN_fbe.FinalModel
     // Get the array
     public _ARRAY_ get(_DOMAIN_fbe.Size size)
     {
-        var values = _INIT_;
+        _ARRAY_ values = _INIT_;
 
         assert ((_buffer.getOffset() + fbeOffset()) <= _buffer.getSize()) : "Model is broken!";
         if ((_buffer.getOffset() + fbeOffset()) > _buffer.getSize())
@@ -3088,7 +3088,7 @@ public final class FinalModelArray_NAME_ extends _DOMAIN_fbe.FinalModel
         }
 
         size.value = 0;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _model.fbeOffset(fbeOffset());
         for (long i = 0; i < _size; i++)
         {
@@ -3112,7 +3112,7 @@ public final class FinalModelArray_NAME_ extends _DOMAIN_fbe.FinalModel
             return 0;
 
         long size = 0;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _model.fbeOffset(fbeOffset());
         for (long i = 0; (i < values.length) && (i < _size); i++)
         {
@@ -3140,7 +3140,7 @@ public final class FinalModelArray_NAME_ extends _DOMAIN_fbe.FinalModel
         values.ensureCapacity((int)_size);
 
         long size = 0;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _model.fbeOffset(fbeOffset());
         for (long i = _size; i-- > 0;)
         {
@@ -3251,28 +3251,28 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
     public long fbeAllocationSize(_TYPE_[] values)
     {
         long size = 4;
-        for (var value : values)
+        for (_TYPE_ value : values)
             size += _model.fbeAllocationSize(value);
         return size;
     }
     public long fbeAllocationSize(java.util.ArrayList<_TYPE_> values)
     {
         long size = 4;
-        for (var value : values)
+        for (_TYPE_ value : values)
             size += _model.fbeAllocationSize(value);
         return size;
     }
     public long fbeAllocationSize(java.util.LinkedList<_TYPE_> values)
     {
         long size = 4;
-        for (var value : values)
+        for (_TYPE_ value : values)
             size += _model.fbeAllocationSize(value);
         return size;
     }
     public long fbeAllocationSize(java.util.HashSet<_TYPE_> values)
     {
         long size = 4;
-        for (var value : values)
+        for (_TYPE_ value : values)
             size += _model.fbeAllocationSize(value);
         return size;
     }
@@ -3319,7 +3319,7 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
         values.ensureCapacity((int)fbeVectorSize);
 
         long size = 4;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _model.fbeOffset(fbeOffset() + 4);
         for (long i = 0; i < fbeVectorSize; i++)
         {
@@ -3350,7 +3350,7 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
             return 4;
 
         long size = 4;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _model.fbeOffset(fbeOffset() + 4);
         for (long i = 0; i < fbeVectorSize; i++)
         {
@@ -3381,7 +3381,7 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
             return 4;
 
         long size = 4;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _model.fbeOffset(fbeOffset() + 4);
         for (long i = 0; i < fbeVectorSize; i++)
         {
@@ -3409,7 +3409,7 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
 
         long size = 4;
         _model.fbeOffset(fbeOffset() + 4);
-        for (var value : values)
+        for (_TYPE_ value : values)
         {
             long offset = _model.set(value);
             _model.fbeShift(offset);
@@ -3433,7 +3433,7 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
 
         long size = 4;
         _model.fbeOffset(fbeOffset() + 4);
-        for (var value : values)
+        for (_TYPE_ value : values)
         {
             long offset = _model.set(value);
             _model.fbeShift(offset);
@@ -3457,7 +3457,7 @@ public final class FinalModelVector_NAME_ extends _DOMAIN_fbe.FinalModel
 
         long size = 4;
         _model.fbeOffset(fbeOffset() + 4);
-        for (var value : values)
+        for (_TYPE_ value : values)
         {
             long offset = _model.set(value);
             _model.fbeShift(offset);
@@ -3520,7 +3520,7 @@ public final class FinalModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Final
     public long fbeAllocationSize(java.util.TreeMap<_KEY_TYPE_, _VALUE_TYPE_> values)
     {
         long size = 4;
-        for (var value : values.entrySet())
+        for (Map.Entry<_KEY_TYPE_, _VALUE_TYPE_> value : values.entrySet())
         {
             size += _modelKey.fbeAllocationSize(value.getKey());
             size += _modelValue.fbeAllocationSize(value.getValue());
@@ -3530,7 +3530,7 @@ public final class FinalModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Final
     public long fbeAllocationSize(java.util.HashMap<_KEY_TYPE_, _VALUE_TYPE_> values)
     {
         long size = 4;
-        for (var value : values.entrySet())
+        for (Map.Entry<_KEY_TYPE_, _VALUE_TYPE_> value : values.entrySet())
         {
             size += _modelKey.fbeAllocationSize(value.getKey());
             size += _modelValue.fbeAllocationSize(value.getValue());
@@ -3586,7 +3586,7 @@ public final class FinalModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Final
             return 4;
 
         long size = 4;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _modelKey.fbeOffset(fbeOffset() + 4);
         _modelValue.fbeOffset(fbeOffset() + 4);
         for (long i = fbeMapSize; i-- > 0;)
@@ -3624,7 +3624,7 @@ public final class FinalModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Final
             return 4;
 
         long size = 4;
-        var offset = new _DOMAIN_fbe.Size();
+        _DOMAIN_fbe.Size offset = new _DOMAIN_fbe.Size();
         _modelKey.fbeOffset(fbeOffset() + 4);
         _modelValue.fbeOffset(fbeOffset() + 4);
         for (long i = fbeMapSize; i-- > 0;)
@@ -3661,7 +3661,7 @@ public final class FinalModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Final
         long size = 4;
         _modelKey.fbeOffset(fbeOffset() + 4);
         _modelValue.fbeOffset(fbeOffset() + 4);
-        for (var value : values.entrySet())
+        for (Map.Entry<_KEY_TYPE_, _VALUE_TYPE_> value : values.entrySet())
         {
             long offsetKey = _modelKey.set(value.getKey());
             _modelKey.fbeShift(offsetKey);
@@ -3690,7 +3690,7 @@ public final class FinalModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Final
         long size = 4;
         _modelKey.fbeOffset(fbeOffset() + 4);
         _modelValue.fbeOffset(fbeOffset() + 4);
-        for (var value : values.entrySet())
+        for (Map.Entry<_KEY_TYPE_, _VALUE_TYPE_> value : values.entrySet())
         {
             long offsetKey = _modelKey.set(value.getKey());
             _modelKey.fbeShift(offsetKey);
@@ -4244,20 +4244,20 @@ final class DateJson implements com.google.gson.JsonSerializer<java.util.Date>, 
     }
 }
 
-final class InstantJson implements com.google.gson.JsonSerializer<java.time.Instant>, com.google.gson.JsonDeserializer<java.time.Instant>
+final class InstantJson implements com.google.gson.JsonSerializer<java.util.Date>, com.google.gson.JsonDeserializer<java.util.Date>
 {
     @Override
-    public com.google.gson.JsonElement serialize(java.time.Instant src, java.lang.reflect.Type typeOfSrc, com.google.gson.JsonSerializationContext context)
+    public com.google.gson.JsonElement serialize(java.util.Date src, java.lang.reflect.Type typeOfSrc, com.google.gson.JsonSerializationContext context)
     {
         long nanoseconds = src.getEpochSecond() * 1000000000 + src.getNano();
         return new com.google.gson.JsonPrimitive(nanoseconds);
     }
 
     @Override
-    public java.time.Instant deserialize(com.google.gson.JsonElement json, java.lang.reflect.Type type, com.google.gson.JsonDeserializationContext context) throws com.google.gson.JsonParseException
+    public java.util.Date deserialize(com.google.gson.JsonElement json, java.lang.reflect.Type type, com.google.gson.JsonDeserializationContext context) throws com.google.gson.JsonParseException
     {
         long nanoseconds = json.getAsJsonPrimitive().getAsLong();
-        return java.time.Instant.ofEpochSecond(nanoseconds / 1000000000, nanoseconds % 1000000000);
+        return new java.util.Date(nanoseconds / 1000000);
     }
 }
 
@@ -4313,7 +4313,6 @@ public final class Json
         builder.registerTypeAdapter(char.class, new CharacterJson());
         builder.registerTypeAdapter(Character.class, new CharacterJson());
         builder.registerTypeAdapter(java.util.Date.class, new DateJson());
-        builder.registerTypeAdapter(java.time.Instant.class, new InstantJson());
         builder.registerTypeAdapter(java.math.BigDecimal.class, new BigDecimalJson());
         builder.registerTypeAdapter(java.util.UUID.class, new UUIDJson());
         return builder;
@@ -4531,7 +4530,7 @@ void GeneratorJava::GenerateEnum(const std::shared_ptr<Package>& p, const std::s
     WriteLineIndent("static");
     WriteLineIndent("{");
     Indent(1);
-    WriteLineIndent("for (var value : " + enum_name + ".values())");
+    WriteLineIndent("for (" + enum_name + " value : " + enum_name + ".values())");
     Indent(1);
     WriteLineIndent("mapping.put(value.value, value);");
     Indent(-1);
@@ -4848,7 +4847,7 @@ void GeneratorJava::GenerateFlags(const std::shared_ptr<Package>& p, const std::
     WriteLineIndent("public String toString()");
     WriteLineIndent("{");
     Indent(1);
-    WriteLineIndent("var sb = new StringBuilder();");
+    WriteLineIndent("StringBuilder sb = new StringBuilder();");
     if (f->body && !f->body->values.empty())
     {
         WriteLineIndent("boolean first = true;");
@@ -4873,7 +4872,7 @@ void GeneratorJava::GenerateFlags(const std::shared_ptr<Package>& p, const std::
     WriteLineIndent("static");
     WriteLineIndent("{");
     Indent(1);
-    WriteLineIndent("for (var value : " + flags_name + ".values())");
+    WriteLineIndent("for (" + flags_name + " value : " + flags_name + ".values())");
     Indent(1);
     WriteLineIndent("mapping.put(value.value, value);");
     Indent(-1);
@@ -5063,7 +5062,7 @@ void GeneratorJava::GenerateFlagsClass(const std::shared_ptr<Package>& p, const 
     WriteLineIndent("public String toString()");
     WriteLineIndent("{");
     Indent(1);
-    WriteLineIndent("var sb = new StringBuilder();");
+    WriteLineIndent("StringBuilder sb = new StringBuilder();");
     WriteLineIndent("boolean first = true;");
     if (f->body)
     {
@@ -5245,11 +5244,11 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
     WriteLineIndent("{");
     Indent(1);
     WriteLineIndent("// Serialize the struct to the FBE stream");
-    WriteLineIndent("var writer = new " + domain + *p->name + ".fbe." + *s->name + "Model();");
+    WriteLineIndent(domain + *p->name + ".fbe." + *s->name + "Model writer = new " + domain + *p->name + ".fbe." + *s->name + "Model();");
     WriteLineIndent("writer.serialize(this);");
     WriteLine();
     WriteLineIndent("// Deserialize the struct from the FBE stream");
-    WriteLineIndent("var reader = new " + domain + *p->name + ".fbe." + *s->name + "Model();");
+    WriteLineIndent(domain + *p->name + ".fbe." + *s->name + "Model reader = new " + domain + *p->name + ".fbe." + *s->name + "Model();");
     WriteLineIndent("reader.attach(writer.getBuffer());");
     WriteLineIndent("return reader.deserialize();");
     Indent(-1);
@@ -5380,7 +5379,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
     WriteLineIndent("public String toString()");
     WriteLineIndent("{");
     Indent(1);
-    WriteLineIndent("var sb = new StringBuilder();");
+    WriteLineIndent("StringBuilder sb = new StringBuilder();");
     WriteLineIndent("sb.append(\"" + *s->name + "(\");");
     first = true;
     if (s->base && !s->base->empty())
@@ -5401,7 +5400,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
                 Indent(1);
                 WriteLineIndent("boolean first = true;");
                 WriteLineIndent("sb.append(\"" + std::string(first ? "" : ",") + *field->name + "=[\").append(" + *field->name + ".length" + ").append(\"][\");");
-                WriteLineIndent("for (var item : " + *field->name + ")");
+                WriteLineIndent("for (" + ConvertTypeName(domain, "", *field->type, field->optional) + " item : " + *field->name + ")");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent(ConvertOutputStreamValue(*field->type, "item", field->optional, true));
@@ -5423,7 +5422,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
                 Indent(1);
                 WriteLineIndent("boolean first = true;");
                 WriteLineIndent("sb.append(\"" + std::string(first ? "" : ",") + *field->name + "=[\").append(" + *field->name + ".size()" + ").append(\"][\");");
-                WriteLineIndent("for (var item : " + *field->name + ")");
+                WriteLineIndent("for (" + ConvertTypeName(domain, "", *field->type, field->optional) + " item : " + *field->name + ")");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent(ConvertOutputStreamValue(*field->type, "item", field->optional, true));
@@ -5445,7 +5444,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
                 Indent(1);
                 WriteLineIndent("boolean first = true;");
                 WriteLineIndent("sb.append(\"" + std::string(first ? "" : ",") + *field->name + "=[\").append(" + *field->name + ".size()" + ").append(\"]<\");");
-                WriteLineIndent("for (var item : " + *field->name + ")");
+                WriteLineIndent("for (" + ConvertTypeName(domain, "", *field->type, field->optional) + " item : " + *field->name + ")");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent(ConvertOutputStreamValue(*field->type, "item", field->optional, true));
@@ -5467,7 +5466,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
                 Indent(1);
                 WriteLineIndent("boolean first = true;");
                 WriteLineIndent("sb.append(\"" + std::string(first ? "" : ",") + *field->name + "=[\").append(" + *field->name + ".size()" + ").append(\"]{\");");
-                WriteLineIndent("for (var item : " + *field->name + ")");
+                WriteLineIndent("for (" + ConvertTypeName(domain, "", *field->type, field->optional) + " item : " + *field->name + ")");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent(ConvertOutputStreamValue(*field->type, "item", field->optional, true));
@@ -5489,7 +5488,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
                 Indent(1);
                 WriteLineIndent("boolean first = true;");
                 WriteLineIndent("sb.append(\"" + std::string(first ? "" : ",") + *field->name + "=[\").append(" + *field->name + ".size()" + ").append(\"]<{\");");
-                WriteLineIndent("for (var item : " + *field->name + ".entrySet())");
+                WriteLineIndent("for (Map.Entry<" + ConvertTypeName(domain, "", *field->key, false) + ", " + ConvertTypeName(domain, "", *field->type, field->optional) + "> item : " + *field->name + ".entrySet())");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent(ConvertOutputStreamValue(*field->key, "item.getKey()", false, true));
@@ -5513,7 +5512,7 @@ void GeneratorJava::GenerateStruct(const std::shared_ptr<Package>& p, const std:
                 Indent(1);
                 WriteLineIndent("boolean first = true;");
                 WriteLineIndent("sb.append(\"" + std::string(first ? "" : ",") + *field->name + "=[\").append(" + *field->name + ".size()" + ").append(\"][{\");");
-                WriteLineIndent("for (var item : " + *field->name + ".entrySet())");
+                WriteLineIndent("for (Map.Entry<" + ConvertTypeName(domain, "", *field->key, false) + ", " + ConvertTypeName(domain, "", *field->type, field->optional) + "> item : " + *field->name + ".entrySet())");
                 WriteLineIndent("{");
                 Indent(1);
                 WriteLineIndent(ConvertOutputStreamValue(*field->key, "item.getKey()", false, true));
@@ -6065,7 +6064,7 @@ void GeneratorJava::GenerateStructModel(const std::shared_ptr<Package>& p, const
     // Generate struct model deserialize() methods
     WriteLine();
     WriteLineIndent("// Deserialize the struct value");
-    WriteLineIndent("public " + struct_name + " deserialize() { var value = new " + struct_name + "(); deserialize(value); return value; }");
+    WriteLineIndent("public " + struct_name + " deserialize() { " + struct_name + " value = new " + struct_name + "(); deserialize(value); return value; }");
     WriteLineIndent("public long deserialize(" + struct_name + " value)");
     WriteLineIndent("{");
     Indent(1);
@@ -6268,7 +6267,7 @@ void GeneratorJava::GenerateStructFinalModel(const std::shared_ptr<Package>& p, 
     {
         WriteLineIndent("long fbeCurrentOffset = 0;");
         WriteLineIndent("long fbeCurrentSize = 0;");
-        WriteLineIndent("var fbeFieldSize = new " + domain + "fbe.Size(0);");
+        WriteLineIndent(domain + "fbe.Size fbeFieldSize = new " + domain + "fbe.Size(0);");
         if (s->base && !s->base->empty())
         {
             WriteLine();
@@ -6322,7 +6321,7 @@ void GeneratorJava::GenerateStructFinalModel(const std::shared_ptr<Package>& p, 
     {
         WriteLineIndent("long fbeCurrentOffset = 0;");
         WriteLineIndent("long fbeCurrentSize = 0;");
-        WriteLineIndent("var fbeFieldSize = new " + domain + "fbe.Size();");
+        WriteLineIndent(domain + "fbe.Size fbeFieldSize = new " + domain + "fbe.Size();");
         if (s->base && !s->base->empty())
         {
             WriteLine();
@@ -6454,7 +6453,7 @@ void GeneratorJava::GenerateStructModelFinal(const std::shared_ptr<Package>& p, 
     // Generate struct model final deserialize() methods
     WriteLine();
     WriteLineIndent("// Deserialize the struct value");
-    WriteLineIndent("public " + struct_name + " deserialize() { var value = new " + struct_name + "(); deserialize(value); return value; }");
+    WriteLineIndent("public " + struct_name + " deserialize() { " + struct_name +" value = new " + struct_name + "(); deserialize(value); return value; }");
     WriteLineIndent("public long deserialize(" + struct_name + " value)");
     WriteLineIndent("{");
     Indent(1);
@@ -6472,7 +6471,7 @@ void GeneratorJava::GenerateStructModelFinal(const std::shared_ptr<Package>& p, 
     WriteLineIndent("return 8;");
     Indent(-1);
     WriteLine();
-    WriteLineIndent("var fbeSize = new " + domain + "fbe.Size();");
+    WriteLineIndent(domain + "fbe.Size fbeSize = new " + domain + "fbe.Size();");
     WriteLineIndent("value = _model.get(fbeSize, value);");
     WriteLineIndent("return 8 + fbeSize.value;");
     Indent(-1);
@@ -7195,7 +7194,7 @@ bool GeneratorJava::IsPackageType(const std::string& type)
             (type == "Long") || (type == "ULong") ||
             (type == "Float") || (type == "Double") ||
             (type == "java.math.BigDecimal") || (type == "java.math.BigInteger") ||
-            (type == "String") || (type == "java.util.Date") || (type == "java.time.Instant") || (type == "java.util.UUID"));
+            (type == "String") || (type == "java.util.Date") || (type == "java.util.Date") || (type == "java.util.UUID"));
 }
 
 bool GeneratorJava::IsPrimitiveType(const std::string& type, bool optional)
@@ -7528,7 +7527,7 @@ std::string GeneratorJava::ConvertTypeName(const std::string& domain, const std:
     else if (type == "string")
         return "String";
     else if (type == "timestamp")
-        return ((Version() < 8) ? "java.util.Date" : "java.time.Instant");
+        return "java.util.Date";
     else if (type == "uuid")
         return "java.util.UUID";
 
@@ -7668,7 +7667,7 @@ std::string GeneratorJava::ConvertTypeFieldType(const std::string& domain, const
     else if (type == "string")
         return "String";
     else if (type == "timestamp")
-        return ((Version() < 8) ? "java.util.Date" : "java.time.Instant");
+        return "java.util.Date";
     else if (type == "uuid")
         return "java.util.UUID";
 
@@ -7804,9 +7803,9 @@ std::string GeneratorJava::ConvertConstant(const std::string& domain, const std:
         return "";
     }
     else if (value == "epoch")
-        return ((Version() < 8) ? "new java.util.Date(0)" : "java.time.Instant.EPOCH");
+        return "new java.util.Date(0)";
     else if (value == "utc")
-        return ((Version() < 8) ? "new java.util.Date(System.currentTimeMillis())" : "java.time.Instant.now()");
+        return "new java.util.Date(System.currentTimeMillis())";
     else if (value == "uuid0")
         return domain + "fbe.UUIDGenerator.nil()";
     else if (value == "uuid1")
@@ -7939,7 +7938,7 @@ std::string GeneratorJava::ConvertDefault(const std::string& domain, const std::
     else if (type == "string")
         return "\"\"";
     else if (type == "timestamp")
-        return ((Version() < 8) ? "new java.util.Date(0)" : "java.time.Instant.EPOCH");
+        return "new java.util.Date(0)";
     else if (type == "uuid")
         return domain + "fbe.UUIDGenerator.nil()";
 
