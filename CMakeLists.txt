@@ -173,4 +173,6 @@ if(NOT FBEC_MODULE)
     endforeach()
   endif()
 
+  add_definitions(-DCPPCOMMON_DISABLE_WCHAR)
+
 endif()
