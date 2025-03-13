@@ -7621,7 +7621,7 @@ std::string GeneratorJava::ConvertTypeFieldName(const std::string& type)
     else if (type == "string")
         return "String";
     else if (type == "timestamp")
-        return ((Version() < 8) ? "Date" : "Timestamp");
+        return "Date";
     else if (type == "uuid")
         return "UUID";
 
@@ -7986,7 +7986,7 @@ std::string GeneratorJava::ConvertOutputStreamType(const std::string& type, cons
     else if ((type == "string") || (type == "uuid"))
         return ".append(\"\\\"\").append(" + name + ").append(\"\\\"\")";
     else if (type == "timestamp")
-        return ((Version() < 8) ? ".append(" + name + ".getTime() * 1000)" : ".append(" + name + ".getEpochSecond() * 1000000000 + " + name + ".getNano())");
+        return ".append(" + name + ".getTime() * 1000)" ;
     else
         return ".append(" + name + ")";
 }
