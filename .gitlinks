@@ -5,7 +5,7 @@ CppBenchmark modules/CppBenchmark https://github.com/chronoxor/CppBenchmark.git 
 CppCommon modules/CppCommon https://github.com/chronoxor/CppCommon.git master
 rapidjson modules/rapidjson https://github.com/miloyip/rapidjson.git master
 
-fmt modules/CppCommon/modules/fmt https://github.com/fmtlib/fmt.git v9.1.0
+fmt modules/CppCommon/modules/fmt https://github.com/fmtlib/fmt.git v10.2.0
 
 # Scripts
 build build https://github.com/chronoxor/CppBuildScripts.git master
