@@ -2073,7 +2073,7 @@ public final class FieldModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Field
         if (fbeMapSize == 0)
             return;
 
-        _MODEL_ fbeModel = getItem(0);
+        _DOMAIN_fbe.Pair<_KEY_MODEL_, _VALUE_MODEL_> fbeModel = getItem(0);
         for (long i = fbeMapSize; i-- > 0;)
         {
             _KEY_TYPE_ key = fbeModel.getKey().get();
@@ -2097,7 +2097,7 @@ public final class FieldModelMap_KEY_NAME__VALUE_NAME_ extends _DOMAIN_fbe.Field
         if (fbeMapSize == 0)
             return;
 
-        _MODEL_ fbeModel = getItem(0);
+        _DOMAIN_fbe.Pair<_KEY_MODEL_, _VALUE_MODEL_> fbeModel = getItem(0);
         for (long i = fbeMapSize; i-- > 0;)
         {
             _KEY_TYPE_ key = fbeModel.getKey().get();
