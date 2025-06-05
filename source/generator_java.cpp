@@ -989,7 +989,7 @@ public final class FieldModelTimestamp extends FieldModel
     public long fbeSize() { return 8; }
 
     // Get the timestamp value
-    public java.util.Date get() { return get(java.util.Date(0)); }
+    public java.util.Date get() { return get(new java.util.Date(0)); }
     public java.util.Date get(java.util.Date defaults)
     {
         assert (defaults != null) : "Invalid default timestamp value!";
